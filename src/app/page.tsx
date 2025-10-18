@@ -39,7 +39,6 @@ export default function Home() {
 
       if (lastTimeEntry && !lastTimeEntry.end) {
         lastTimeEntry.end = currentTime;
-        console.log(lastTimeEntry);
 
         const { error } = await supabase
           .from('times')
