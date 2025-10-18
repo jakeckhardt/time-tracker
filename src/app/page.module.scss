@@ -1,0 +1,51 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 20px;
+  min-height: 100dvh;
+
+  .addContainer {
+    display: flex;
+    gap: 20px;
+
+    input {
+      padding: 5px;
+      border: 1px solid var(--white);
+      border-radius: 5px;
+      color: var(--black);
+    }
+
+    .categoriesContainer {
+      display: flex;
+      gap: 10px;
+    }
+
+    button {
+      border: 1px solid var(--white);
+      border-radius: 5px;
+      padding: 10px;
+      background: none;
+      color: var(--white);
+      cursor: pointer;
+  
+      &.activeCategory {
+        border-color: var(--green);
+        background: var(--green);
+      }
+
+      &.addTask {
+        background: var(--green);
+        border-color: var(--green);
+      }
+    }
+  }
+
+  .allTaskContainer {
+    display: flex;
+    gap: 10px;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+}

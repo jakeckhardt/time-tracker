@@ -1,0 +1,79 @@
+.taskContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: calc(50% - 5px);
+    max-height: 70px;
+    overflow: hidden;
+    transition: all 0.2s ease-in-out;
+
+    &.open {
+        max-height: 500px;
+    }
+
+    .task {
+        border: 1px solid var(--white);
+        border-radius: 5px;
+        padding: 15px;
+        display: flex;
+        gap: 20px;
+        min-height: 70px;
+
+        .taskDetails {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-grow: 1;
+
+            .taskTitle {
+                width: 50%;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+            }
+        }
+
+        svg {
+            width: 30px;
+            cursor: pointer;
+
+            path {
+                fill: var(--white);
+            }
+        }
+
+        button {
+            background: var(--green);
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            color: var(--white);
+            cursor: pointer;
+        }
+
+        &.activeTask {
+            border-color: var(--green);
+
+            button {
+                background: var(--red);
+            }
+        }
+    }
+
+    .timeEntries {
+        padding: 0 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+
+        .timeEntry {
+            background: var(--green);
+            border-radius: 5px;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+    }
+}
