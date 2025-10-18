@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import styles from "./login.module.scss";
-
 import { createClient } from '@supabase/supabase-js'
 import { useRouter } from 'next/navigation';
 
@@ -26,7 +25,7 @@ export default function Login() {
 
     async function handleLogin() {
         try {
-            const { data, error } = await supabase.auth.signInWithPassword({
+            const { data } = await supabase.auth.signInWithPassword({
                 email: 'jake.c.eckhardt@gmail.com',
                 password: password,
             });

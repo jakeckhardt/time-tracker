@@ -116,7 +116,7 @@ export default function Home() {
     }
     
     getTasks();
-  }, []);
+  }, [router]);
 
   return (
     <div className={styles.page}>

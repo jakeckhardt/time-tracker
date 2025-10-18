@@ -19,13 +19,17 @@ export default function Task({ task, index, activeTask, handleTimer }: { task: T
 
     function formatTime(date: Date) {
         const d = new Date(date);
-        let hours = d.getHours(),
-            minutes = d.getMinutes(),
-            ampm = hours >= 12 ? 'pm' : 'am';
+
+        let hours = d.getHours();
+        const minutes = d.getMinutes();
+        const ampm = hours >= 12 ? 'pm' : 'am';
+
         hours = hours % 12;
         hours = hours ? hours : 12;
+
         const formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
-        var timeString = hours + ':' + formattedMinutes + ' ' + ampm;
+        const timeString = hours + ':' + formattedMinutes + ' ' + ampm;
+
         return timeString;
     };
 
