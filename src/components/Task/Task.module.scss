@@ -8,7 +8,7 @@
     transition: all 0.2s ease-in-out;
 
     &.open {
-        max-height: 500px;
+        max-height: 300px;
     }
 
     .task {
@@ -19,11 +19,15 @@
         gap: 20px;
         min-height: 70px;
 
+        &.uncompletedTask {
+            border-color: var(--red);
+        }
+
         .taskDetails {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-grow: 1;
+            width: calc(100% - 30px);
 
             .taskTitle {
                 width: 50%;
@@ -35,11 +39,17 @@
         }
 
         svg {
-            width: 30px;
+            max-width: 30px;
+            width: 100%;
             cursor: pointer;
+            transition: transform 0.2s ease-in-out;
 
             path {
                 fill: var(--white);
+            }
+
+            &.open {
+                transform: rotate(180deg);
             }
         }
 
@@ -68,12 +78,17 @@
         gap: 10px;
 
         .timeEntry {
-            background: var(--green);
+            border: 1px solid var(--red);
             border-radius: 5px;
             padding: 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+
+            &.completed {
+                border-color: var(--green);
+                background: var(--green);
+            }
         }
     }
 }

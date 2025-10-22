@@ -1,0 +1,33 @@
+.exportModalContainer {
+    position: fixed;
+    height: 100dvh;
+    width: 100%;
+    z-index: 1000;
+    background: rgba(0, 0, 0, 0.75);
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .exportModal {
+        padding: 20px;
+        background: var(--black);
+        border-radius: 10px;
+        width: 100%;
+        max-width: 360px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+
+        .close {
+            background: var(--red);
+            border: none;
+            border-radius: 5px;
+            padding: 10px;
+            color: var(--white);
+            cursor: pointer;
+            flex: 1;
+        }
+    }
+}
