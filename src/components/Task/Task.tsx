@@ -86,7 +86,7 @@ export default function Task({
                             <p>{formatDate(time.start)}</p>
                             <p>Start: {formatTime(time.start)}</p>
                             <p>End: {time.end ? formatTime(new Date(time.end)) : "In Progress"}</p>
-                            <input type="checkbox" checked={time.completed} onChange={(e) => updateTimeCompletion(time.id, !time.completed)}/>
+                            <input type="checkbox" checked={time.completed} onChange={() => updateTimeCompletion(time.id, !time.completed)}/>
                         </div>
                     ))
                 )}

@@ -27,14 +27,14 @@ export default function ExportModal({
     closeModal
 } : { 
     categories: string[],
-    tasks: any[],
+    tasks: Task[],
     closeModal: () => void
 }) {
 
     const [exportData, setExportData] = useState<ExportData[]>([]);
 
     useEffect(() => {
-        let totalArr: ExportData[] = [];
+        const totalArr: ExportData[] = [];
         
         categories.forEach(category => {
             totalArr.push({name: category, totalHours: 0, totalEarned: 0});
@@ -67,7 +67,7 @@ export default function ExportModal({
         });
 
         setExportData(totalArr);
-    }, [categories]);
+    }, [tasks, categories]);
 
     return (
         <div className={styles.exportModalContainer}>

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import styles from "./AddModal.module.scss";
 
 export default function AddModal({ 
@@ -36,6 +36,7 @@ export default function AddModal({
                 <div className={styles.categoriesContainer}>
                     {categories.map((category => (
                         <button 
+                            key={`addModal-category-${category}`}
                             className={[styles.categoryButton, newTaskCategory === category && styles.activeCategory].join(" ")}
                             onClick={() => setNewTaskCategory(category)}
                         >

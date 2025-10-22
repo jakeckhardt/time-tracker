@@ -91,11 +91,11 @@ export default function Home() {
       return;
     }
 
-    let newTasks = [...tasks];
-    let updatedTask = newTasks.find(task => task.times.some(time => time.id === timeId));
+    const newTasks = [...tasks];
+    const updatedTask = newTasks.find(task => task.times.some(time => time.id === timeId));
 
     if (updatedTask) {
-      let timeEntry = updatedTask.times.find(time => time.id === timeId);
+      const timeEntry = updatedTask.times.find(time => time.id === timeId);
       if (timeEntry) {
         timeEntry.completed = completed;
       }
