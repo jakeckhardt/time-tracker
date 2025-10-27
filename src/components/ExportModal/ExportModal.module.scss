@@ -16,9 +16,30 @@
         border-radius: 10px;
         width: 100%;
         max-width: 360px;
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
+
+        .exportInner {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding: 20px 0;
+            
+            .categoryNumbers {
+                display: flex;
+                justify-content: space-between;
+                gap: 5px;
+                font-size: 14px;
+    
+                &.withDivider {
+                    padding-bottom: 10px;
+                    border-bottom: 2px solid var(--white);
+                }
+    
+                &.total {
+                    font-weight: bold;
+                    font-size: 18px;
+                }
+            }
+        }
 
         .close {
             background: var(--red);
@@ -27,7 +48,8 @@
             padding: 10px;
             color: var(--white);
             cursor: pointer;
-            flex: 1;
+            width: 100%;
+            font-weight: bold;
         }
     }
 }

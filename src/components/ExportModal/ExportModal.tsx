@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, Fragment } from "react";
+import { calculateTotalHours } from "@/utils/timeFormatFunctions";
 import styles from "./ExportModal.module.scss";
 
 interface Task {
@@ -17,7 +18,7 @@ interface Task {
 
 interface ExportData {
     name: string;
-    totalHours: number;
+    totalMinutes: number;
     totalEarned: number;
 }
 
@@ -30,14 +31,14 @@ export default function ExportModal({
     tasks: Task[],
     closeModal: () => void
 }) {
-
+    const month = ["Jan.", "Feb.", "Mar.", "Apr.", "May", "Jun.", "Jul.", "Aug.", "Sep.", "Oct.", "Nov.", "Dec."];
     const [exportData, setExportData] = useState<ExportData[]>([]);
 
     useEffect(() => {
         const totalArr: ExportData[] = [];
         
         categories.forEach(category => {
-            totalArr.push({name: category, totalHours: 0, totalEarned: 0});
+            totalArr.push({name: category, totalMinutes: 0, totalEarned: 0});
         });
 
         tasks.forEach((task: Task) => {
@@ -45,13 +46,12 @@ export default function ExportModal({
                 if (time.end) {
                     const start = new Date(time.start);
                     const end = new Date(time.end);
-                    const diff = (end.getTime() - start.getTime()) / (1000 * 60 * 60); // difference in hours
+                    const diff = (end.getTime() - start.getTime()) / (1000 * 60); // difference in hours
 
                     const categoryTotal = totalArr.find(total => total.name === task.category);
                     
                     if (categoryTotal) {
-                        categoryTotal.totalHours += diff;
-                        
+                        categoryTotal.totalMinutes += diff;
                     }
                 }
             });
@@ -59,10 +59,10 @@ export default function ExportModal({
 
         totalArr.forEach(category => {
             // const categoryTotal = totalArr.find(total => total.name === category);
-            if (category.totalHours) {
+            if (category.totalMinutes) {
                 // Assuming a fixed hourly rate for demonstration; replace with actual logic if needed
                 const hourlyRate = category.name === "BestMind" ? 50 : 60; 
-                category.totalEarned = category.totalHours * hourlyRate;
+                category.totalEarned = category.totalMinutes / 60 * hourlyRate;
             }
         });
 
@@ -72,18 +72,22 @@ export default function ExportModal({
     return (
         <div className={styles.exportModalContainer}>
             <div className={styles.exportModal}>
-                <h2>Monthly Report</h2>
-                {exportData.map((categoryData => (
-                    <Fragment key={"export-" + categoryData.name}>
-                        <h3>{categoryData.name}</h3>    
-                        <p>{categoryData.totalHours.toFixed(2)} hours</p>
-                        <p>${categoryData.totalEarned.toFixed(2)}</p>
-                    </Fragment>
-                )))}
-                <div>
-                    <h3>Total</h3>
-                    <p>{exportData.reduce((acc, curr) => acc + curr.totalHours, 0).toFixed(2)} hours</p>
-                    <p>${exportData.reduce((acc, curr) => acc + curr.totalEarned, 0).toFixed(2)}</p>
+                <h2>{month[new Date().getMonth()]} {new Date().getFullYear()} Monthly Report</h2>
+                <div className={styles.exportInner}>
+                    {exportData.map((categoryData => (
+                        <Fragment key={"export-" + categoryData.name}>
+                            <h3>{categoryData.name}</h3>
+                            <div className={[styles.categoryNumbers, styles.withDivider].join(" ")}>
+                                <p>{calculateTotalHours(categoryData.totalMinutes)}</p>
+                                <p>${categoryData.totalEarned.toFixed(2)}</p>
+                            </div>    
+                        </Fragment>
+                    )))}
+                        <h3>Total</h3>
+                        <div className={[styles.categoryNumbers, styles.total].join(" ")}>
+                            <p>{calculateTotalHours(exportData.reduce((acc, curr) => acc + curr.totalMinutes, 0))}</p>
+                            <p>${exportData.reduce((acc, curr) => acc + curr.totalEarned, 0).toFixed(2)}</p>
+                        </div>
                 </div>
                 <button 
                     className={styles.close}

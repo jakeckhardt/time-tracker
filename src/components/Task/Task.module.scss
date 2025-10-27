@@ -1,15 +1,7 @@
 .taskContainer {
     display: flex;
     flex-direction: column;
-    gap: 10px;
     width: calc(50% - 5px);
-    max-height: 70px;
-    overflow: hidden;
-    transition: all 0.2s ease-in-out;
-
-    &.open {
-        max-height: 300px;
-    }
 
     .task {
         border: 1px solid var(--white);
@@ -60,6 +52,7 @@
             border-radius: 5px;
             color: var(--white);
             cursor: pointer;
+            font-weight: bold;
         }
 
         &.activeTask {
@@ -71,23 +64,63 @@
         }
     }
 
-    .timeEntries {
-        padding: 0 10px;
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
+    .timeEntriesContainer {
+        max-height: 0px;
+        height: 100%;
+        overflow: scroll;
+        transition: all 0.2s ease-in-out;
 
-        .timeEntry {
-            border: 1px solid var(--red);
-            border-radius: 5px;
-            padding: 10px;
+        &.open {
+            max-height: 300px;
+        }
+
+        .timeEntries {
+            padding: 10px 10px 0;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            flex-direction: column;
+            gap: 10px;
 
-            &.completed {
-                border-color: var(--green);
-                background: var(--green);
+            .timeEntry {
+                border: 1px solid var(--red);
+                border-radius: 5px;
+                padding: 10px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+    
+                &.completed {
+                    border-color: var(--green);
+                    background: var(--green);
+                }
+
+                .checkbox {
+                    width: 20px;
+                    height: 20px;
+                    border: 1px solid var(--white);
+                    border-radius: 3px;
+                    cursor: pointer;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+
+                    svg {
+                        max-width: 15px;
+                        width: 100%;
+                        display: none;
+
+                        path {
+                            fill: var(--black);
+                        }
+                    }
+    
+                    &.checked {
+                        background: var(--white);
+    
+                        svg {
+                            display: block;
+                        }
+                    }
+                }
             }
         }
     }

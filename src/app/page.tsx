@@ -38,7 +38,7 @@ export default function Home() {
 
     if (activeTask !== null) {
       const currentTime = new Date();
-      const lastTimeEntry = newTasks[Number(activeTask)].times[newTasks[Number(activeTask)].times.length - 1];
+      const lastTimeEntry = newTasks[Number(activeTask)].times[0];
 
       if (lastTimeEntry && !lastTimeEntry.end) {
         lastTimeEntry.end = currentTime;
@@ -60,7 +60,9 @@ export default function Home() {
       return;
     }
 
-    newTasks[Number(index)].times.push({ id: (newTasks[Number(index)].times.length + 1).toString(), start: new Date(), end: null, completed: false });
+    newTasks[Number(index)].times = ([{ id: (newTasks[Number(index)].times.length + 1).toString(), start: new Date(), end: null, completed: false }, ...newTasks[Number(index)].times]);
+
+    // newTasks[Number(index)].times.push({ id: (newTasks[Number(index)].times.length + 1).toString(), start: new Date(), end: null, completed: false });
     setTasks(newTasks);
     setActiveTask(activeTask === index ? null : index);
   };
@@ -76,7 +78,7 @@ export default function Home() {
       return;
     }
 
-    const newTasks = [{ id: data[0].id, title: taskTitle, times: [], category: taskCategory }, ...tasks];
+    const newTasks = [...tasks, { id: data[0].id, title: taskTitle, times: [], category: taskCategory }];
     setTasks(newTasks);
   };
 
@@ -116,6 +118,8 @@ export default function Home() {
     getSession();
 
     async function getTasks() {
+      const currentDate = new Date();
+
       const { data, error } = await supabase
         .from('tasks')
         .select(`
@@ -129,7 +133,8 @@ export default function Home() {
             completed
           )
         `)
-        .order('start', { referencedTable: 'times', ascending: false });
+        .order('start', { referencedTable: 'times', ascending: false })
+        .gte('times.start', new Date(`${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-1`).toISOString());
       
       if (error) {
         console.error("Error fetching tasks:", error);
