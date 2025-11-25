@@ -15,10 +15,10 @@
         background: var(--black);
         border-radius: 10px;
         width: 100%;
-        max-width: 360px;
+        max-width: 400px;
         display: flex;
         flex-direction: column;
-        gap: 10px;
+        gap: 20px;
 
         input {
             padding: 5px;
@@ -40,10 +40,12 @@
                 background: none;
                 color: var(--white);
                 cursor: pointer;
+                font-weight: 600;
             
                 &.activeCategory {
                     border-color: var(--green);
                     background: var(--green);
+                    color: var(--black);
                 }
             }
         }
@@ -53,9 +55,10 @@
             border: none;
             border-radius: 5px;
             padding: 10px;
-            color: var(--white);
+            color: var(--black);
             cursor: pointer;
             flex: 1;
+            font-weight: 600;
         }
 
         .close {
@@ -63,9 +66,10 @@
             border: none;
             border-radius: 5px;
             padding: 10px;
-            color: var(--white);
+            color: var(--black);
             cursor: pointer;
             flex: 1;
+            font-weight: 600;
         }
     }
 }

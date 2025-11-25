@@ -62,7 +62,6 @@ export default function Home() {
 
     newTasks[Number(index)].times = ([{ id: (newTasks[Number(index)].times.length + 1).toString(), start: new Date(), end: null, completed: false }, ...newTasks[Number(index)].times]);
 
-    // newTasks[Number(index)].times.push({ id: (newTasks[Number(index)].times.length + 1).toString(), start: new Date(), end: null, completed: false });
     setTasks(newTasks);
     setActiveTask(activeTask === index ? null : index);
   };
@@ -151,7 +150,6 @@ export default function Home() {
 
   return (
     <div className={styles.page}>
-      <h1>Task Timer</h1>
       <div className={styles.actionsContainer}>
         <div className={styles.categories}>
           {categories.map((category => (
