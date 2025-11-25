@@ -50,13 +50,14 @@
             padding: 10px;
             border: none;
             border-radius: 5px;
-            color: var(--white);
+            color: var(--black);
             cursor: pointer;
             font-weight: bold;
         }
 
         &.activeTask {
             border-color: var(--green);
+            background: var(--green);
 
             button {
                 background: var(--red);
@@ -67,8 +68,8 @@
     .timeEntriesContainer {
         max-height: 0px;
         height: 100%;
-        overflow: scroll;
         transition: all 0.2s ease-in-out;
+        overflow: overlay;
 
         &.open {
             max-height: 300px;
@@ -122,6 +123,10 @@
                     }
                 }
             }
+        }
+
+        &::-webkit-scrollbar {
+            display: none;
         }
     }
 }

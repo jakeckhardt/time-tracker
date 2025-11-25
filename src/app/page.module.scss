@@ -23,11 +23,13 @@
       &.selected {
         background: var(--green);
         border-color: var(--green);
+        color: var(--black);
       }
 
       &.addTaskButton {
         background: var(--green);
         border-color: var(--green);
+        color: var(--black);
       }
     }
 
