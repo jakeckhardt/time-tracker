@@ -12,7 +12,7 @@
 
     .addModal {
         padding: 20px;
-        background: var(--black);
+        background: var(--white);
         border-radius: 10px;
         width: 100%;
         max-width: 400px;
@@ -21,8 +21,8 @@
         gap: 20px;
 
         input {
-            padding: 5px;
-            border: 1px solid var(--white);
+            padding: 10px;
+            border: 2px solid var(--black);
             border-radius: 5px;
             color: var(--black);
             width: 100%;
@@ -34,18 +34,18 @@
 
             button {
                 flex: 1;
-                border: 1px solid var(--white);
+                border: 2px solid var(--black);
                 border-radius: 5px;
                 padding: 10px;
                 background: none;
-                color: var(--white);
+                color: var(--black);
                 cursor: pointer;
                 font-weight: 600;
             
                 &.activeCategory {
                     border-color: var(--green);
                     background: var(--green);
-                    color: var(--black);
+                    color: var(--white);
                 }
             }
         }
@@ -55,7 +55,7 @@
             border: none;
             border-radius: 5px;
             padding: 10px;
-            color: var(--black);
+            color: var(--white);
             cursor: pointer;
             flex: 1;
             font-weight: 600;
@@ -66,7 +66,7 @@
             border: none;
             border-radius: 5px;
             padding: 10px;
-            color: var(--black);
+            color: var(--white);
             cursor: pointer;
             flex: 1;
             font-weight: 600;

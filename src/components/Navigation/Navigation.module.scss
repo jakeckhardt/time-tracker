@@ -3,18 +3,28 @@
     justify-content: space-between;
     align-items: center;
     padding: 20px;
-    height: 80px;
-
-    .navButtons {
-
-        button {
-            background: var(--green);
-            border: 1px solid var(--green);
-            padding: 10px 15px;
-            color: var(--black);
-            cursor: pointer;
-            font-weight: bold;
-            border-radius: 5px;
+    
+    .innerContainer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px;
+        height: 80px;
+        width: 100%;
+        background: var(--white);
+        border-radius: 10px;
+        
+        .navButtons {
+    
+            button {
+                background: var(--green);
+                border: 1px solid var(--green);
+                padding: 10px 20px;
+                color: var(--white);
+                cursor: pointer;
+                font-weight: bold;
+                border-radius: 50px;
+            }
         }
     }
 }

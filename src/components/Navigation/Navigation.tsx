@@ -36,13 +36,15 @@ export default function Navigation() {
 
     return (
         <div className={styles.navigationContainer}>
-            <h1>Task Timer</h1>
-            <div className={styles.navButtons}>
-                <button
-                    onClick={handleUserButton}
-                >
-                    {userLoggedIn ? "Logout" : "Login"}
-                </button>
+            <div className={styles.innerContainer}>
+                <h1>Task Timer</h1>
+                <div className={styles.navButtons}>
+                    <button
+                        onClick={handleUserButton}
+                    >
+                        {userLoggedIn ? "Logout" : "Login"}
+                    </button>
+                </div>
             </div>
         </div>
     )
