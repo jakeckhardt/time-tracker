@@ -3,7 +3,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: calc(100dvh - 80px);
+    height: calc(100dvh - 120px);
 
     .innerContainer {
         display: flex;
@@ -12,13 +12,16 @@
         gap: 20px;
         width: 100%;
         max-width: 400px;
+        background: var(--white);
+        padding: 40px;
+        border-radius: 10px;
 
         .errorContainer {
             display: flex;
             width: 100%;
             justify-content: center;
             background: var(--red);
-            color: var(--black);
+            color: var(--white);
             padding: 10px;
             border-radius: 5px;
         }
@@ -31,12 +34,12 @@
 
             label {
                 font-weight: 600;
-                color: var(--white);
+                color: var(--black);
             }
     
             input {
                 padding: 10px;
-                border: 1px solid var(--white);
+                border: 2px solid var(--black);
                 border-radius: 5px;
                 color: var(--black);
                 width: 100%;
@@ -57,7 +60,7 @@
             border-radius: 5px;
             padding: 10px 20px;
             background: var(--green);
-            color: var(--black);
+            color: var(--white);
             cursor: pointer;
             width: 100%;
 
@@ -76,8 +79,8 @@
             width: 100%;
 
             span {
-                height: 1px;
-                background: var(--white);
+                height: 2px;
+                background: var(--black);
                 width: 100%;
             }
         }
@@ -92,7 +95,7 @@
             flex-direction: column;
             width: 100%;
             align-items: center;
-            color: var(--white);
+            color: var(--black);
             gap: 10px;
 
             a {

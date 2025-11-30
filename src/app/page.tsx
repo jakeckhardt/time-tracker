@@ -4,6 +4,7 @@ import { useState, useEffect, Fragment } from "react";
 import styles from "./page.module.scss";
 import { createClient } from '@supabase/supabase-js'
 import Task from "@/components/Task/Task";
+import AddProjectModal from "@/components/AddProjectModal/AddProjectModal";
 import AddModal from "@/components/AddModal/AddModal";
 import ExportModal from "@/components/ExportModal/ExportModal";
 import { useRouter } from 'next/navigation';
@@ -12,14 +13,20 @@ const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env
 
 interface Task {
   id: string;
+  projectId: string;
   title: string;
-  times: { 
-      id: string,
-      start: Date; 
-      end: Date | null;
-      completed: boolean
+  times: {
+    id: string,
+    start: Date;
+    end: Date | null;
+    completed: boolean
   }[],
-  category: string
+}
+
+interface Project {
+  id: string;
+  title: string;
+  rate: number;
 }
 
 const categories = ["BestMind", "CapTrust", "CO Materials"];
@@ -27,8 +34,10 @@ const categories = ["BestMind", "CapTrust", "CO Materials"];
 export default function Home() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
+  const [addProject, setAddProject] = useState(false);
   const [addTask, setAddTask] = useState(false);
   const [showExport, setShowExport] = useState(false);
+  const [projects, setProjects] = useState<Project[]>([]);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [activeTask, setActiveTask] = useState<number | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
@@ -46,7 +55,7 @@ export default function Home() {
         const { error } = await supabase
           .from('times')
           .insert({ start: lastTimeEntry.start, end: lastTimeEntry.end, task_id: newTasks[Number(activeTask)].id });
-        
+
         if (error) {
           console.error("Error adding task:", error);
           return;
@@ -66,19 +75,34 @@ export default function Home() {
     setActiveTask(activeTask === index ? null : index);
   };
 
+  async function handleAddProject(projectTitle: string, rate: number) {
+    console.log(projectTitle);
+    const { data, error } = await supabase
+      .from('projects')
+      .insert({ project_title: projectTitle, rate: rate })
+      .select();
+
+    if (error) {
+      console.error("Error adding task:", error);
+      return;
+    }
+
+    console.log(data);
+  };
+
   async function handleAddTask(taskTitle: string, taskCategory: string) {
     const { data, error } = await supabase
       .from('tasks')
       .insert({ title: taskTitle, category: taskCategory })
       .select();
-    
+
     if (error) {
       console.error("Error adding task:", error);
       return;
     }
 
     const newTasks = [...tasks, { id: data[0].id, title: taskTitle, times: [], category: taskCategory }];
-    setTasks(newTasks);
+    // setTasks(newTasks);
   };
 
   async function updateTaskCompletion(timeId: string, completed: boolean) {
@@ -86,7 +110,7 @@ export default function Home() {
       .from('times')
       .update({ completed: completed })
       .eq('id', timeId);
-    
+
     if (error) {
       console.error("Error updating task completion:", error);
       return;
@@ -107,75 +131,102 @@ export default function Home() {
 
   useEffect(() => {
     async function getSession() {
-        const { data } = await supabase.auth.getSession();
+      const { data } = await supabase.auth.getSession();
 
-        if (data.session === null) {
-            router.push('/login');
-        }
+      if (data.session === null) {
+        router.push('/login');
+      }
     }
 
     getSession();
 
-    async function getTasks() {
+    async function getProjects() {
       const currentDate = new Date();
 
       const { data, error } = await supabase
-        .from('tasks')
+        .from('projects')
         .select(`
           id,
-          category,
-          title,
-          times (
+          project_title,
+          rate,
+          tasks (
             id,
-            start,
-            end,
-            completed
+            project_id,
+            title,
+            times (
+              id,
+              start,
+              end,
+              completed
+            )
           )
         `)
-        .order('start', { referencedTable: 'times', ascending: false })
-        .gte('times.start', new Date(`${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-1`).toISOString());
-      
+      .order('start', { referencedTable: 'tasks.times', ascending: false })
+      .gte('tasks.times.start', new Date(`${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-1`).toISOString());
+
       if (error) {
         console.error("Error fetching tasks:", error);
-      } else {
-        if (data) {
-          setTasks(data as Task[]);
-          setLoading(false);
-        }
+        return;
       }
-    }
-    
-    getTasks();
+
+      console.log(data);
+
+      const projectArr = data.map(project => ({
+        id: project.id,
+        title: project.project_title,
+        rate: project.rate
+      }));
+      
+      const projectTasksArr = data.flatMap(project =>
+        project.tasks.map(task => ({
+          id: task.id,
+          projectId: task.project_id,
+          title: task.title,
+          times: task.times
+        }))
+      );
+
+      setProjects(projectArr);
+      setTasks(projectTasksArr);
+      setLoading(false);
+    };
+
+    getProjects();
   }, [router]);
 
   return (
     <div className={styles.page}>
       <div className={styles.actionsContainer}>
         <div className={styles.categories}>
-          {categories.map((category => (
-            <button 
-              key={"category-" + category}
-              className={[styles.categoryButton, selectedCategory === category ? styles.selected : " "].join(" ")}
-              onClick={() => setSelectedCategory(category)}
+          {projects.map((project => (
+            <button
+              key={"project-" + project.title}
+              className={[styles.categoryButton, selectedCategory === project.id ? styles.selected : " "].join(" ")}
+              onClick={() => setSelectedCategory(project.id)}
             >
-              {category}
-            </button>                        
+              {project.title}
+            </button>
           )))}
-          <button 
+          <button
             className={[styles.categoryButton, selectedCategory === "All" ? styles.selected : ""].join(" ")}
             onClick={() => setSelectedCategory("All")}
           >
-            All 
+            All
           </button>
+          <button 
+            className={styles.addProjectButton}
+            onClick={() => setAddProject(true)}>
+              + Add project
+            </button>
         </div>
         <div className={styles.actionButtonsContainer}>
-          <button 
+          <button
             className={styles.addTaskButton}
             onClick={() => setShowExport(true)}
           >
             Export
           </button>
-          <button 
+          <button
             className={styles.addTaskButton}
             onClick={() => setAddTask(true)}
           >
@@ -185,33 +236,40 @@ export default function Home() {
       </div>
       <div className={styles.allTaskContainer}>
         {loading ? (
-          <p>Loading...</p>
+          <h2 className={styles.loading}>Loading...</h2>
         ) : (
           <Fragment>
             {tasks.map((task, index) => (
-              (selectedCategory === "All" || task.category === selectedCategory) &&
-                <Task 
-                  key={"task-" + index} 
-                  task={task} 
-                  index={index} 
-                  activeTask={activeTask} 
-                  handleTimer={handleTimer} 
-                  updateTimeCompletion={updateTaskCompletion}
-                />
+              (selectedCategory === "All" || task.projectId === selectedCategory) &&
+              <Task
+                key={"task-" + index}
+                task={task}
+                projectTitle={projects.find(project => project.id === task.projectId)!.title}
+                index={index}
+                activeTask={activeTask}
+                handleTimer={handleTimer}
+                updateTimeCompletion={updateTaskCompletion}
+              />
             ))}
           </Fragment>
         )}
       </div>
+      {addProject && (
+        <AddProjectModal
+          handleAddProject={handleAddProject}
+          closeModal={() => setAddProject(false)}
+        />
+      )}
       {addTask && (
-        <AddModal 
-          categories={categories}
+        <AddModal
+          projects={projects}
           handleAddTask={handleAddTask}
           closeModal={() => setAddTask(false)}
         />
       )}
       {showExport && (
-        <ExportModal 
-          categories={categories}
+        <ExportModal
+          projects={projects}
           tasks={tasks}
           closeModal={() => setShowExport(false)}
         />

@@ -1,4 +1,4 @@
-.addModalContainer {
+.addProjectModalContainer {
     position: fixed;
     height: 100dvh;
     width: 100%;
@@ -10,7 +10,7 @@
     justify-content: center;
     align-items: center;
 
-    .addModal {
+    .addProjectModal {
         padding: 20px;
         background: var(--white);
         border-radius: 10px;

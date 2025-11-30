@@ -2,14 +2,15 @@
     display: flex;
     flex-direction: column;
     width: calc(50% - 5px);
-
+    
     .task {
-        border: 1px solid var(--white);
+        border: 2px solid transparent;
+        background: var(--white);
         border-radius: 5px;
         padding: 15px;
         display: flex;
         gap: 20px;
-        min-height: 70px;
+        min-height: 80px;
 
         &.uncompletedTask {
             border-color: var(--red);
@@ -37,7 +38,7 @@
             transition: transform 0.2s ease-in-out;
 
             path {
-                fill: var(--white);
+                fill: var(--black);
             }
 
             &.open {
@@ -47,17 +48,17 @@
 
         button {
             background: var(--green);
-            padding: 10px;
+            padding: 10px 15px;
             border: none;
-            border-radius: 5px;
-            color: var(--black);
+            border-radius: 50px;
+            color: var(--white);
             cursor: pointer;
             font-weight: bold;
         }
 
         &.activeTask {
             border-color: var(--green);
-            background: var(--green);
+            background: var(--lightGreen);
 
             button {
                 background: var(--red);
@@ -82,22 +83,22 @@
             gap: 10px;
 
             .timeEntry {
-                border: 1px solid var(--red);
+                border: 2px solid var(--red);
                 border-radius: 5px;
                 padding: 10px;
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
+                background: var(--white);
     
                 &.completed {
-                    border-color: var(--green);
-                    background: var(--green);
+                    border-color: transparent;
                 }
 
                 .checkbox {
                     width: 20px;
                     height: 20px;
-                    border: 1px solid var(--white);
+                    border: 2px solid var(--black);
                     border-radius: 3px;
                     cursor: pointer;
                     display: flex;

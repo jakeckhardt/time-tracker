@@ -6,24 +6,26 @@ import styles from "./Task.module.scss";
 
 interface Task {
     id: string;
+    projectId: string;
     title: string;
     times: {
-        id: string,
-        start: Date;
-        end: Date | null,
-        completed: boolean
+      id: string,
+      start: Date;
+      end: Date | null;
+      completed: boolean
     }[],
-    category: string,
-};
+}
 
 export default function Task({ 
     task, 
+    projectTitle,
     index, 
     activeTask, 
     handleTimer,
     updateTimeCompletion 
 } : { 
     task: Task, 
+    projectTitle: string,
     index: number, 
     activeTask: number | null, 
     handleTimer: (index: number, id: string) => void ,
@@ -57,7 +59,7 @@ export default function Task({
             <div className={[styles.task, activeTask === index ? styles.activeTask : checkUncompletedTimes()].join(" ")}>
                 <div className={styles.taskDetails}>
                     <p className={styles.taskTitle}>{task.title}</p>
-                    <p>{task.category}</p>
+                    <p>{projectTitle}</p>
                     <button onClick={() => handleTimer(index, task.id)}>{activeTask === index ? "Stop Timer" : "Start Timer"}</button>
                 </div>
                 <svg
