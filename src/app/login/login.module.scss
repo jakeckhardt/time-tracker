@@ -3,7 +3,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: calc(100dvh - 80px);
+    height: calc(100dvh - 120px);
 
     .innerContainer {
         display: flex;
@@ -12,6 +12,9 @@
         gap: 20px;
         width: 100%;
         max-width: 400px;
+        background: var(--white);
+        padding: 40px;
+        border-radius: 10px;
 
         .errorContainer {
             display: flex;

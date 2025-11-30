@@ -92,8 +92,7 @@
                 background: var(--white);
     
                 &.completed {
-                    border-color: var(--green);
-                    background: var(--green);
+                    border-color: transparent;
                 }
 
                 .checkbox {

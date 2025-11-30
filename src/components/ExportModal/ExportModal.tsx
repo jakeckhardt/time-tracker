@@ -1,92 +1,162 @@
 "use client"
 
+import Decimal from "decimal.js";
 import { useState, useEffect, Fragment } from "react";
 import { calculateTotalHours } from "@/utils/timeFormatFunctions";
 import styles from "./ExportModal.module.scss";
 
-interface Task {
+interface Project {
     id: string;
     title: string;
-    times: { 
-        id: string,
-        start: Date; 
-        end: Date | null;
-        completed: boolean
+    rate: number;
+}
+
+interface Task {
+    id: string;
+    projectId: string;
+    title: string;
+    times: {
+      id: string,
+      start: Date;
+      end: Date | null;
+      completed: boolean
     }[],
-    category: string
 }
 
 interface ExportData {
-    name: string;
-    totalMinutes: number;
-    totalEarned: number;
+    totalMinutes: Decimal;
+    totalEarned: Decimal;
+    projects: {
+        projectId: string;
+        projectTitle: string;
+        projectRate: number;
+        totalMinutes: Decimal;
+        totalEarned: Decimal;
+        weeklyBreakdown: {
+            startDate: Date;
+            endDate: Date;
+            totalMinutes: Decimal;
+            totalEarned: Decimal;
+        }[]
+    }[]
 }
 
 export default function ExportModal({ 
-    categories,
+    projects,
     tasks,
     closeModal
 } : { 
-    categories: string[],
+    projects: Project[],
     tasks: Task[],
     closeModal: () => void
 }) {
     const month = ["Jan.", "Feb.", "Mar.", "Apr.", "May", "Jun.", "Jul.", "Aug.", "Sep.", "Oct.", "Nov.", "Dec."];
-    const [exportData, setExportData] = useState<ExportData[]>([]);
+    const [exportData, setExportData] = useState<ExportData>({totalMinutes: new Decimal(0), totalEarned: new Decimal(0), projects: []});
 
     useEffect(() => {
-        const totalArr: ExportData[] = [];
+        const dataSetup: ExportData = {
+            totalMinutes: new Decimal(0),
+            totalEarned: new Decimal(0),
+            projects: [],
+        };
+
+        const currentTime = new Date();
         
-        categories.forEach(category => {
-            totalArr.push({name: category, totalMinutes: 0, totalEarned: 0});
+        projects.forEach(project => {
+
+            const daysOfMonth = new Date(currentTime.getFullYear(), currentTime.getMonth() + 1, 0).getDate();
+            const weeksInMonth = Math.ceil(daysOfMonth / 7);
+
+            const breakdownArr = [];
+
+            for (let week = 0; week < weeksInMonth; week++) {
+                const startDate = new Date(currentTime.getFullYear(), currentTime.getMonth(), week * 7 + 1);
+                const endDate = new Date(new Date(currentTime.getFullYear(), currentTime.getMonth(), Math.min((week + 1) * 7, daysOfMonth)).setHours(23, 59, 59, 999));
+
+                breakdownArr.push({
+                    startDate,
+                    endDate,
+                    totalMinutes: new Decimal(0),
+                    totalEarned: new Decimal(0),
+                    // tasks: []
+                });
+            };
+
+            dataSetup.projects.push({
+                projectId: project.id,
+                projectTitle: project.title, 
+                projectRate: project.rate,
+                totalMinutes: new Decimal(0), 
+                totalEarned: new Decimal(0),
+                weeklyBreakdown: breakdownArr
+            });
         });
 
         tasks.forEach((task: Task) => {
-            task.times.forEach(time => {
-                if (time.end) {
-                    const start = new Date(time.start);
-                    const end = new Date(time.end);
-                    const diff = (end.getTime() - start.getTime()) / (1000 * 60); // difference in hours
 
-                    const categoryTotal = totalArr.find(total => total.name === task.category);
-                    
-                    if (categoryTotal) {
-                        categoryTotal.totalMinutes += diff;
-                    }
+            task.times.forEach(time => {
+                
+                if (time.end) {
+                    const start = new Decimal(new Date(time.start).getTime()).div(60000).floor().mul(60000);
+                    const end = new Decimal(new Date(time.end).getTime()).div(60000).floor().mul(60000);
+                    const taskTimeInMinutes = new Decimal(end).minus(start).div(60000);
+
+                    const project = dataSetup.projects.find(project => project.projectId === task.projectId);
+                    if (project) {
+
+                        project.weeklyBreakdown.forEach(week => {
+                            
+                            if (new Date(time.end!) >= week.startDate && new Date(time.end!) <= week.endDate) {
+
+                                week.totalMinutes = new Decimal(week.totalMinutes).add(taskTimeInMinutes.trunc());
+                                project.totalMinutes = new Decimal(project.totalMinutes).add(taskTimeInMinutes.trunc());
+                                dataSetup.totalMinutes = new Decimal(dataSetup.totalMinutes).add(taskTimeInMinutes.trunc());
+                                // const rate = task.category === "BestMind" ? 50 : 60;
+                                const rate = project.projectRate;
+                                const taskTimeInHours = taskTimeInMinutes.div(60);
+                                const amountEarned = taskTimeInHours.mul(rate);
+
+                                week.totalEarned = new Decimal(week.totalEarned).add(amountEarned);
+                                project.totalEarned = new Decimal(project.totalEarned).add(amountEarned);
+                                dataSetup.totalEarned = new Decimal(dataSetup.totalEarned).add(amountEarned);
+                            }
+                        });
+                    };
                 }
             });
         });
 
-        totalArr.forEach(category => {
-            // const categoryTotal = totalArr.find(total => total.name === category);
-            if (category.totalMinutes) {
-                // Assuming a fixed hourly rate for demonstration; replace with actual logic if needed
-                const hourlyRate = category.name === "BestMind" ? 50 : 60; 
-                category.totalEarned = category.totalMinutes / 60 * hourlyRate;
-            }
-        });
-
-        setExportData(totalArr);
-    }, [tasks, categories]);
+        setExportData(dataSetup);
+    }, [tasks, projects]);
 
     return (
         <div className={styles.exportModalContainer}>
             <div className={styles.exportModal}>
                 <h2>{month[new Date().getMonth()]} {new Date().getFullYear()} Monthly Report</h2>
                 <div className={styles.exportInner}>
-                    {exportData.map((categoryData => (
-                        <Fragment key={"export-" + categoryData.name}>
-                            <h3>{categoryData.name}</h3>
+                    {exportData.projects.map((projectData => (
+                        <div key={"export-" + projectData.projectTitle} className={styles.projectContainer}>
+                            <h3>{projectData.projectTitle}</h3>
+                            <div className={styles.weeksContainer}>
+                                {projectData.weeklyBreakdown.map((weekData, index) => (
+                                    <div key={projectData.projectTitle + "-week-" + index} className={styles.weekContainer}>
+                                        <p>{new Date(weekData.startDate).getMonth() + 1}/{new Date(weekData.startDate).getDate()} - {new Date(weekData.startDate).getMonth() + 1}/{new Date(weekData.endDate).getDate()}</p>
+                                        <p>{calculateTotalHours(weekData.totalMinutes)}</p>
+                                        <p>${weekData.totalEarned.toFixed(2)}</p>
+                                    </div>
+                                ))}
+                            </div>
                             <div className={[styles.categoryNumbers, styles.withDivider].join(" ")}>
-                                <p>{calculateTotalHours(categoryData.totalMinutes)}</p>
-                                <p>${categoryData.totalEarned.toFixed(2)}</p>
+                                <p>Total</p>
+                                <p>{calculateTotalHours(projectData.totalMinutes)}</p>
+                                <p>${new Decimal(projectData.totalEarned).toFixed(2)}</p>
                             </div>    
-                        </Fragment>
+                        </div>
                     )))}
-                        <h3>Total</h3>
                         <div className={[styles.categoryNumbers, styles.total].join(" ")}>
-                            <p>{calculateTotalHours(exportData.reduce((acc, curr) => acc + curr.totalMinutes, 0))}</p>
-                            <p>${exportData.reduce((acc, curr) => acc + curr.totalEarned, 0).toFixed(2)}</p>
+                            <h3>Total</h3>
+                            <p>{calculateTotalHours(exportData.totalMinutes)}</p>
+                            <p>${exportData.totalEarned.toFixed(2)}</p>
                         </div>
                 </div>
                 <button 

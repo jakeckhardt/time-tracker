@@ -1,3 +1,5 @@
+import Decimal from "decimal.js";
+
 export function formatDate(date: Date) {
     const d = new Date(date);
     const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -8,14 +10,17 @@ export function formatDate(date: Date) {
 };
 
 export function calculateDuration(start: Date, end: Date | null) {
-    const startTime = new Date(start).getTime();
-    const endTime = end ? new Date(end).getTime() : Date.now();
-    const durationInMinutes = Math.floor((endTime - startTime) / 60000);
-    return `${durationInMinutes >= 60 ? Math.floor(durationInMinutes / 60) + "h": ""} ${durationInMinutes % 60}m`;
+    const startTime = new Decimal(new Date(start).getTime()).div(60000).floor().mul(60000);
+    const endTime = end ? new Decimal(new Date(end).getTime()).div(60000).floor().mul(60000) : Date.now();
+    const durationInMinutes = new Decimal(endTime).minus(startTime).div(60000);
+    const totalHours = durationInMinutes.div(60).trunc();
+    const minutesRemaining = totalHours.isZero() ? durationInMinutes.trunc() : durationInMinutes.minus(totalHours.mul(60)).trunc();
+    return `${totalHours}h ${minutesRemaining}m`;
 };
 
-export function calculateTotalHours(totalInMinutes: number) {
-    const hours = Math.floor(totalInMinutes / 60);
-    const minutes = totalInMinutes % 60;
-    return `${hours}h ${minutes.toFixed(0)}m`;
+
+export function calculateTotalHours(totalInMinutes: Decimal) {
+    const hours = new Decimal(totalInMinutes).div(60).trunc();
+    const minutes = hours.isZero() ? new Decimal(totalInMinutes).trunc() : new Decimal(totalInMinutes).minus(hours.mul(60)).trunc();
+    return `${hours}h ${minutes}m`;
 };

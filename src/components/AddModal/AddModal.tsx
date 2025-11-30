@@ -3,23 +3,29 @@
 import { useState } from "react";
 import styles from "./AddModal.module.scss";
 
+interface Project {
+    id: string;
+    title: string;
+    rate: number;
+}
+
 export default function AddModal({ 
-    categories,
+    projects,
     handleAddTask,
     closeModal
 } : { 
-    categories: string[],
+    projects: Project[],
     handleAddTask: (title: string, category: string) => void,
     closeModal: () => void
 }) {
 
     const [newTaskTitle, setNewTaskTitle] = useState<string>("");
-    const [newTaskCategory, setNewTaskCategory] = useState<string>(categories[0]);
+    const [newTaskCategory, setNewTaskCategory] = useState<string>(projects[0].id);
 
     function handleModalSubmit() {
         handleAddTask(newTaskTitle, newTaskCategory);
         setNewTaskTitle("");
-        setNewTaskCategory(categories[0]);
+        setNewTaskCategory(projects[0].id);
         closeModal();
     };
 
@@ -34,13 +40,13 @@ export default function AddModal({
                     onChange={(e) => setNewTaskTitle(e.target.value)}
                 />
                 <div className={styles.categoriesContainer}>
-                    {categories.map((category => (
+                    {projects.map((project => (
                         <button 
-                            key={`addModal-category-${category}`}
-                            className={[styles.categoryButton, newTaskCategory === category && styles.activeCategory].join(" ")}
-                            onClick={() => setNewTaskCategory(category)}
+                            key={`addModal-category-${project.id}`}
+                            className={[styles.categoryButton, newTaskCategory === project.id && styles.activeCategory].join(" ")}
+                            onClick={() => setNewTaskCategory(project.id)}
                         >
-                            {category}
+                            {project.title}
                         </button>                        
                     )))}
                 </div>

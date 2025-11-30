@@ -29,7 +29,8 @@
         color: var(--white);
       }
 
-      &.addTaskButton {
+      &.addTaskButton,
+      &.addProjectButton {
         background: var(--green);
         border-color: var(--green);
         color: var(--white);
@@ -48,5 +49,11 @@
     gap: 10px;
     justify-content: space-between;
     flex-wrap: wrap;
+
+    .loading {
+      font-weight: 600;
+      font-size: 24px;
+      margin: 0 auto;
+    }
   }
 }

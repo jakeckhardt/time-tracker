@@ -8,7 +8,12 @@
     left: 0;
     display: flex;
     justify-content: center;
-    align-items: center;
+    padding: 20px;
+    overflow: overlay;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
 
     .exportModal {
         padding: 20px;
@@ -16,27 +21,35 @@
         border-radius: 10px;
         width: 100%;
         max-width: 400px;
+        height: fit-content;
 
         .exportInner {
             display: flex;
             flex-direction: column;
             gap: 10px;
             padding: 20px 0;
+
+            .projectContainer {
+
+                .weeksContainer {
+    
+                    .weekContainer {
+                        display: grid;
+                        grid-template-columns: repeat(3, 1fr);
+                        gap: 1rem;
+                    }
+                }
+                
+            }
             
             .categoryNumbers {
-                display: flex;
-                justify-content: space-between;
-                gap: 5px;
-                font-size: 14px;
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 1rem;
     
                 &.withDivider {
                     padding-bottom: 10px;
                     border-bottom: 2px solid var(--black);
-                }
-    
-                &.total {
-                    font-weight: bold;
-                    font-size: 18px;
                 }
             }
         }
