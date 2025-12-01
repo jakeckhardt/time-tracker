@@ -29,8 +29,6 @@ interface Project {
   rate: number;
 }
 
-const categories = ["BestMind", "CapTrust", "CO Materials"];
-
 export default function Home() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
@@ -257,12 +255,12 @@ export default function Home() {
             ))}
             {projects.length === 0 && (
               <div className={styles.noTasks}>
-                <p>Click "Add Project" to the upper left to get started.</p>
+                <p>Click &quot;Add Project&quot; to the upper left to get started.</p>
               </div>
             )}
             {projects.length > 0 && tasks.length === 0 && (
               <div className={styles.noTasks}>
-                <p>Click "Add Task" to the upper right to add task to project.</p>
+                <p>Click &quot;Add Task&quot; to the upper right to add task to project.</p>
               </div>
             )}
           </Fragment>
