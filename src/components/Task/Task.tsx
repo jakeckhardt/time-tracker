@@ -74,7 +74,9 @@ export default function Task({
             <div className={[styles.timeEntriesContainer, isOpen ? styles.open : ""].join(" ")}>
                 <div className={styles.timeEntries}>
                     {task.times.length === 0 ? (
-                        <p>No time entries yet.</p>
+                        <div className={styles.noTimes}>
+                            <p>No time entries yet.</p>
+                        </div>
                     ) : ( 
                         task.times.map((time, index) => (
                             <div key={`time-${task.id}-${index}`} className={[styles.timeEntry, time.completed ? styles.completed : ""].join(" ")}>

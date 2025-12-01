@@ -20,12 +20,22 @@
         flex-direction: column;
         gap: 20px;
 
-        input {
-            padding: 10px;
-            border: 2px solid var(--black);
-            border-radius: 5px;
-            color: var(--black);
-            width: 100%;
+        .inputContainer {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+
+            label {
+                font-weight: 600;
+            }
+
+            input {
+                padding: 10px;
+                border: 2px solid var(--black);
+                border-radius: 5px;
+                color: var(--black);
+                width: 100%;
+            }
         }
 
         .categoriesContainer {
