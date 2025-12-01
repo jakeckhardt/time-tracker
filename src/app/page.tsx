@@ -5,7 +5,7 @@ import styles from "./page.module.scss";
 import { createClient } from '@supabase/supabase-js'
 import Task from "@/components/Task/Task";
 import AddProjectModal from "@/components/AddProjectModal/AddProjectModal";
-import AddModal from "@/components/AddModal/AddModal";
+import AddTaskModal from "@/components/AddTaskModal/AddTaskModal";
 import ExportModal from "@/components/ExportModal/ExportModal";
 import { useRouter } from 'next/navigation';
 
@@ -76,7 +76,7 @@ export default function Home() {
   };
 
   async function handleAddProject(projectTitle: string, rate: number) {
-    console.log(projectTitle);
+
     const { data, error } = await supabase
       .from('projects')
       .insert({ project_title: projectTitle, rate: rate })
@@ -88,12 +88,14 @@ export default function Home() {
     }
 
     console.log(data);
+    const newProjects = [...projects, {id: data[0].id, title: data[0].project_title, rate: data[0].rate}];
+    setProjects(newProjects);
   };
 
-  async function handleAddTask(taskTitle: string, taskCategory: string) {
+  async function handleAddTask(taskTitle: string, projectId: string) {
     const { data, error } = await supabase
       .from('tasks')
-      .insert({ title: taskTitle, category: taskCategory })
+      .insert({ title: taskTitle, project_id: projectId })
       .select();
 
     if (error) {
@@ -101,8 +103,8 @@ export default function Home() {
       return;
     }
 
-    const newTasks = [...tasks, { id: data[0].id, title: taskTitle, times: [], category: taskCategory }];
-    // setTasks(newTasks);
+    const newTasks = [...tasks, { id: data[0].id, projectId: data[0].project_id ,title: taskTitle, times: [] }];
+    setTasks(newTasks);
   };
 
   async function updateTaskCompletion(timeId: string, completed: boolean) {
@@ -169,8 +171,6 @@ export default function Home() {
         return;
       }
 
-      console.log(data);
-
       const projectArr = data.map(project => ({
         id: project.id,
         title: project.project_title,
@@ -207,16 +207,18 @@ export default function Home() {
               {project.title}
             </button>
           )))}
-          <button
-            className={[styles.categoryButton, selectedCategory === "All" ? styles.selected : ""].join(" ")}
-            onClick={() => setSelectedCategory("All")}
-          >
-            All
-          </button>
+          {projects.length > 0 && (
+            <button
+              className={[styles.categoryButton, selectedCategory === "All" ? styles.selected : ""].join(" ")}
+              onClick={() => setSelectedCategory("All")}
+            >
+              All
+            </button>
+          )}
           <button 
             className={styles.addProjectButton}
             onClick={() => setAddProject(true)}>
-              + Add project
+              + Add Project
             </button>
         </div>
         <div className={styles.actionButtonsContainer}>
@@ -226,12 +228,14 @@ export default function Home() {
           >
             Export
           </button>
-          <button
-            className={styles.addTaskButton}
-            onClick={() => setAddTask(true)}
-          >
-            + Add Task
-          </button>
+          {projects.length > 0 && (
+            <button
+              className={styles.addTaskButton}
+              onClick={() => setAddTask(true)}
+            >
+              + Add Task
+            </button>
+          )}
         </div>
       </div>
       <div className={styles.allTaskContainer}>
@@ -239,7 +243,7 @@ export default function Home() {
           <h2 className={styles.loading}>Loading...</h2>
         ) : (
           <Fragment>
-            {tasks.map((task, index) => (
+            {tasks.length > 0 && tasks.map((task, index) => (
               (selectedCategory === "All" || task.projectId === selectedCategory) &&
               <Task
                 key={"task-" + index}
@@ -251,6 +255,16 @@ export default function Home() {
                 updateTimeCompletion={updateTaskCompletion}
               />
             ))}
+            {projects.length === 0 && (
+              <div className={styles.noTasks}>
+                <p>Click "Add Project" to the upper left to get started.</p>
+              </div>
+            )}
+            {projects.length > 0 && tasks.length === 0 && (
+              <div className={styles.noTasks}>
+                <p>Click "Add Task" to the upper right to add task to project.</p>
+              </div>
+            )}
           </Fragment>
         )}
       </div>
@@ -261,7 +275,7 @@ export default function Home() {
         />
       )}
       {addTask && (
-        <AddModal
+        <AddTaskModal
           projects={projects}
           handleAddTask={handleAddTask}
           closeModal={() => setAddTask(false)}

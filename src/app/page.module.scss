@@ -4,7 +4,7 @@
   flex-wrap: wrap;
   gap: 20px;
   padding: 0 20px 20px;
-  min-height: 100dvh;
+  min-height: calc(100dvh - 120px);
 
   .actionsContainer {
     display: flex;
@@ -51,6 +51,12 @@
     flex-wrap: wrap;
 
     .loading {
+      font-weight: 600;
+      font-size: 24px;
+      margin: 0 auto;
+    }
+
+    .noTasks {
       font-weight: 600;
       font-size: 24px;
       margin: 0 auto;

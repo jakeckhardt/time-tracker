@@ -12,12 +12,12 @@ export default function AddProjectModal({
 }) {
 
     const [newProjectTitle, setNewProjectTitle] = useState<string>("");
-    const [projectRate, setProjectRate] = useState<number>(0);
+    const [projectRate, setProjectRate] = useState<string>("");
 
     function handleModalSubmit() {
-        handleAddProject(newProjectTitle, projectRate);
+        handleAddProject(newProjectTitle, Number(projectRate));
         setNewProjectTitle("");
-        setProjectRate(0);
+        setProjectRate("");
         closeModal();
     };
 
@@ -25,18 +25,26 @@ export default function AddProjectModal({
         <div className={styles.addProjectModalContainer}>
             <div className={styles.addProjectModal}>
                 <h2>Add Project</h2>
-                <input 
-                    type="text" 
-                    placeholder="Task Title" 
-                    value={newProjectTitle}
-                    onChange={(e) => setNewProjectTitle(e.target.value)}
-                />
-                <input 
-                    type="number"
-                    placeholder="Rate"
-                    value={projectRate}
-                    onChange={(e) => setProjectRate(Number(e.target.value))}     
-                />
+                <div className={styles.inputContainer}>
+                    <label htmlFor="projectTitle">Project Title</label>
+                    <input 
+                        id="projectTitle"
+                        type="text" 
+                        placeholder="Project Title" 
+                        value={newProjectTitle}
+                        onChange={(e) => setNewProjectTitle(e.target.value)}
+                    />
+                </div>
+                <div className={styles.inputContainer}>
+                    <label htmlFor="projectRate">Project Rate</label>
+                    <input 
+                        id="projectRate"
+                        type="number"
+                        placeholder="Rate"
+                        value={projectRate}
+                        onChange={(e) => setProjectRate(e.target.value)}     
+                    />
+                </div>
                 <button 
                     className={styles.addTask}
                     onClick={handleModalSubmit}
